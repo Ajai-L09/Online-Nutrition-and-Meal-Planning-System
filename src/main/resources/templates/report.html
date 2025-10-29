@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Nutrition Report - Nutrition Planner</title>
+</head>
+<body>
+
+<h1>Nutrition Report for <span sec:authentication="name">User</span></h1>
+
+<nav>
+    <a th:href="@{/dashboard}">Dashboard</a> |
+    <a th:href="@{/report}">View Reports</a> |
+    <a th:href="@{/profile}">Profile</a> |
+    <form th:action="@{/perform_logout}" method="post" style="display:inline;">
+        <button type="submit">Logout</button>
+    </form>
+</nav>
+<hr/>
+
+<h2>Generate Report</h2>
+<form th:action="@{/report}" method="post">
+    <div>
+        <label for="startDate">Start Date:</label><br/>
+        <input type="date" id="startDate" name="startDate" th:value="${startDate}" required/>
+    </div>
+    <div>
+        <label for="endDate">End Date:</label><br/>
+        <input type="date" id="endDate" name="endDate" th:value="${endDate}" required/>
+    </div>
+    <div>
+        <button type="submit">Generate Report</button>
+    </div>
+</form>
+<hr/>
+
+<div th:if="${reportData != null}">
+    <h2>Report for <span th:text="${startDate}">Start</span> to <span th:text="${endDate}">End</span></h2>
+    <ul>
+        <li>Total Calories Eaten: <strong th:text="${reportData.totCalories}">0</strong> kcal</li>
+        <li>Total Protein Eaten: <strong th:text="${reportData.totProtein}">0</strong> g</li>
+        <li>Total Carbs Eaten: <strong th:text="${reportData.totCarbs}">0</strong> g</li>
+        <li>Total Fat Eaten: <strong th:text="${reportData.totFat}">0</strong> g</li>
+    </ul>
+</div>
+<div th:if="${reportData == null and #request.getParameter('startDate') != null}">
+    <p>No data found for the selected period.</p>
+</div>
+
+</body>
+</html>

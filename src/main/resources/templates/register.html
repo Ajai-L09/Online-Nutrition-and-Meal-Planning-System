@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register - Nutrition Planner</title>
+</head>
+<body>
+
+<h1>Register New User</h1>
+
+<div th:if="${param.error}">
+    <p style="color: red;" th:text="${'Registration failed: ' + param.error}"></p>
+</div>
+
+<form th:action="@{/register}" th:object="${user}" method="post">
+    <div>
+        <label for="username">Username:</label><br/>
+        <input type="text" id="username" th:field="*{username}" required/>
+    </div>
+    <div>
+        <label for="password">Password:</label><br/>
+        <input type="password" id="password" th:field="*{passwordHash}" required/>
+    </div>
+    <div>
+        <label for="dailyCalorieGoal">Daily Calorie Goal:</label><br/>
+        <input type="number" id="dailyCalorieGoal" th:field="*{dailyCalorieGoal}" required min="0"/>
+    </div>
+    <div>
+        <button type="submit">Register</button>
+    </div>
+</form>
+
+<hr/>
+<p>
+    Already have an account? <a th:href="@{/login}">Login here</a>
+</p>
+
+</body>
+</html>
