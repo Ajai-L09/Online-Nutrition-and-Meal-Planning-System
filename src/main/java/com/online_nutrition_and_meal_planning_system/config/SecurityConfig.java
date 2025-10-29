@@ -20,34 +20,39 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService(UserRepo userRepo) {
         return username -> userRepo.findByUsername(username)
                 .map(user -> org.springframework.security.core.userdetails.User.withUsername(user.getUsername())
-                                .password(user.getPasswordHash())
-                                .roles(user.getRole())
-                                .build()).orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+                        .password(user.getPasswordHash())
+                        .roles(user.getRole())
+                        .build())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
+        http
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/register", "/css/**", "/js/**").permitAll()
-                        .requestMatchers("/api/user/register", "/api/user/login").permitAll()
-                        .requestMatchers("/api/**").authenticated()
-                        .requestMatchers("/dashboard", "/report").authenticated()
+                        .requestMatchers("/", "/login", "/register").permitAll()
+                        .requestMatchers("/perform_login", "/register").permitAll()
                         .anyRequest().authenticated()
-                ).formLogin(form -> form
+                )
+                .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/perform_login")
                         .defaultSuccessUrl("/dashboard", true)
                         .failureUrl("/login?error=true")
                         .permitAll()
-                ).logout(logout -> logout
+                )
+                .logout(logout -> logout
                         .logoutUrl("/perform_logout")
                         .logoutSuccessUrl("/login?logout=true")
                         .permitAll()
