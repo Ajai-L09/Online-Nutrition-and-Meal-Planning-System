@@ -35,6 +35,6 @@ public class MealPlanningService {
 
     public List<Log> getPlanForUser(Long userId) {
         User user = userRepo.findById(userId).orElseThrow(()->new RuntimeException("User not found"));
-        return logRepo.findByUser(user).stream().filter(log -> "Planned".equals(log.getStatus())).collect(Collectors.toList());
+        return logRepo.findByUser(user).stream().filter(log-> "Planned".equals(log.getStatus())).collect(Collectors.toList());
     }
 }

@@ -9,9 +9,9 @@ import java.time.LocalDate;
 
 @Repository
 public interface LogRepo extends JpaRepository<Log, Long> {
-    List<Log> findByUserId(Long userId);
-    List<Log> findByUserIdAndDate(Long userId, LocalDate date);
-    List<Log> findByUserAndStatusAndDateBetween(User user, String status, LocalDate startDate, LocalDate endDate);
 
+    List<Log> findByUser_UserId(Long userId);
+    List<Log> findByUser_UserIdAndDate(Long userId, LocalDate date);
+    List<Log> findByUserAndStatusAndDateBetween(User user, String status, LocalDate startDate, LocalDate endDate);
     List<Log> findByUser(User user);
 }

@@ -14,6 +14,8 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
     public User register(String username, String password, String role, Integer dailyCalorieGoal) {
         if (userRepo.findByUsername(username).isPresent()) {
+
+
             throw new RuntimeException("Username already exists");
         }
         User user = new User();
@@ -23,7 +25,6 @@ public class UserService {
         user.setDailyCalorieGoal(dailyCalorieGoal);
         return userRepo.save(user);
     }
-
     public User updateProfile(Long userId, Integer dailyCalorieGoal) {
         User user = userRepo.findById(userId).orElseThrow(()->new RuntimeException("User not found"));
         user.setDailyCalorieGoal(dailyCalorieGoal);

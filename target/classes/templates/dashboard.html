@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Nutrition Planner</title>
+</head>
+<body>
+
+<h1>Welcome, <span sec:authentication="name">User</span>!</h1>
+<p>Your Daily Calorie Goal: <span th:text="${currentUser.dailyCalorieGoal}">0</span> kcal</p>
+
+<nav>
+    <a th:href="@{/dashboard}">Dashboard</a> |
+    <a th:href="@{/report}">View Reports</a> |
+    <a th:href="@{/profile}">Profile</a> |
+    <form th:action="@{/perform_logout}" method="post" style="display:inline;">
+        <button type="submit">Logout</button>
+    </form>
+</nav>
+<hr/>
+
+<h2>Log Meal Eaten Today</h2>
+<form th:action="@{/log-meal}" method="post">
+    <input type="hidden" name="date" th:value="${today}"/>
+    <div>
+        <label for="logFoodItem">Select Food:</label><br/>
+        <select id="logFoodItem" name="foodId" required>
+            <option value="">-- Select Food --</option>
+            <option th:each="food : ${allFoods}"
+                    th:value="${food.foodId}"
+                    th:text="${food.name + ' (' + food.calories + ' kcal)'}"></option>
+        </select>
+    </div>
+    <div>
+        <label for="logMealType">Meal Type:</label><br/>
+        <input type="text" id="logMealType" name="mealType" required placeholder="e.g., Breakfast, Lunch"/>
+    </div>
+    <div>
+        <button type="submit">Log Meal</button>
+    </div>
+</form>
+<hr/>
+
+<h2>Plan a Meal</h2>
+<form th:action="@{/plan-meal}" method="post">
+    <div>
+        <label for="planDate">Date:</label><br/>
+        <input type="date" id="planDate" name="date" th:value="${today}" required/>
+    </div>
+    <div>
+        <label for="planFoodItem">Select Food:</label><br/>
+        <select id="planFoodItem" name="foodId" required>
+            <option value="">-- Select Food --</option>
+            <option th:each="food : ${allFoods}"
+                    th:value="${food.foodId}"
+                    th:text="${food.name + ' (' + food.calories + ' kcal)'}"></option>
+        </select>
+    </div>
+    <div>
+        <label for="planMealType">Meal Type:</label><br/>
+        <input type="text" id="planMealType" name="mealType" required placeholder="e.g., Dinner"/>
+    </div>
+    <div>
+        <button type="submit">Add to Plan</button>
+    </div>
+</form>
+<hr/>
+
+<h2>Meals Eaten Today (<span th:text="${#temporals.format(today, 'yyyy-MM-dd')}"></span>)</h2>
+<div th:if="${#lists.isEmpty(eatenToday)}">
+    <p>No meals logged as eaten today.</p>
+</div>
+<ul th:unless="${#lists.isEmpty(eatenToday)}">
+    <li th:each="log : ${eatenToday}">
+        <span th:text="${log.mealType}">Meal Type</span>:
+        <span th:text="${log.foodItem.name}">Food Name</span>
+        (<span th:text="${log.foodItem.calories}">0</span> kcal)
+    </li>
+</ul>
+<hr/>
+
+<h2>My Planned Meals</h2>
+<div th:if="${#lists.isEmpty(mealPlan)}">
+    <p>No meals currently planned.</p>
+</div>
+<ul th:unless="${#lists.isEmpty(mealPlan)}">
+    <li th:each="log : ${mealPlan}">
+        <span th:text="${#temporals.format(log.date, 'yyyy-MM-dd')}">Date</span> -
+        <span th:text="${log.mealType}">Meal Type</span>:
+        <span th:text="${log.foodItem.name}">Food Name</span>
+        (<span th:text="${log.foodItem.calories}">0</span> kcal)
+        <form th:action="@{/eat-log/{id}(id=${log.logId})}" method="post" style="display:inline; margin-left: 10px;">
+            <button type="submit">Mark as Eaten</button>
+        </form>
+    </li>
+</ul>
+<hr/>
+
+<h2>Food Recommendations (within your remaining calories for today)</h2>
+<div th:if="${#lists.isEmpty(recommendations)}">
+    <p>No recommendations available based on today's intake, or daily goal not met yet.</p>
+</div>
+<ul th:unless="${#lists.isEmpty(recommendations)}">
+    <li th:each="food : ${recommendations}">
+        <span th:text="${food.name}">Food Name</span>
+        (<span th:text="${food.calories}">0</span> kcal)
+    </li>
+</ul>
+
+</body>
+</html>

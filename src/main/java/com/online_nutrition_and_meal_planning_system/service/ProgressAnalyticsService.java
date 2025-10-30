@@ -26,7 +26,7 @@ public class ProgressAnalyticsService {
         int totProtein = 0;
         int totCarbs = 0;
         int totFat = 0;
-        for (Log log : logs) {
+        for (Log log: logs) {
             if (log.getFoodItem() != null) {
                 totCalories += log.getFoodItem().getCalories();
                 totProtein += log.getFoodItem().getProtein();

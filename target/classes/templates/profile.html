@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile - Nutrition Planner</title>
+</head>
+<body>
+
+<h1>Profile for <span sec:authentication="name">User</span></h1>
+
+<nav>
+    <a th:href="@{/dashboard}">Dashboard</a> |
+    <a th:href="@{/report}">View Reports</a> |
+    <a th:href="@{/profile}">Profile</a> |
+    <form th:action="@{/perform_logout}" method="post" style="display:inline;">
+        <button type="submit">Logout</button>
+    </form>
+</nav>
+<hr/>
+
+<h2>User Details</h2>
+<p><strong>Username:</strong> <span th:text="${currentUser.username}"></span></p>
+<p><strong>Role:</strong> <span th:text="${currentUser.role}"></span></p>
+
+<div th:if="${param.updated}">
+    <p style="color: green;">Profile updated successfully!</p>
+</div>
+
+<h2>Update Profile</h2>
+<form th:action="@{/profile/update}" method="post">
+    <div>
+        <label for="dailyCalorieGoal">Daily Calorie Goal:</label><br/>
+        <input type="number" id="dailyCalorieGoal" name="dailyCalorieGoal" th:value="${currentUser.dailyCalorieGoal}" required min="0"/>
+    </div>
+    <div>
+        <button type="submit">Update Goal</button>
+    </div>
+</form>
+
+</body>
+</html>

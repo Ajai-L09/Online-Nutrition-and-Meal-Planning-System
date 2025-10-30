@@ -20,9 +20,10 @@ public class FoodLogService {
     private UserRepo userRepo;
     @Autowired
     private FoodItemRepo foodItemRepo;
+
     public Log logMeal(Long userId, Long foodId, String mealType, LocalDate date) {
-        User user = userRepo.findById(userId).orElseThrow(()->new RuntimeException("User not found"));
-        FoodItem foodItem = foodItemRepo.findById(foodId).orElseThrow(()->new RuntimeException("FoodItem not found"));
+        User user = userRepo.findById(userId).orElseThrow(()->new RuntimeException("User not found for ID: " + userId));
+        FoodItem foodItem = foodItemRepo.findById(foodId).orElseThrow(()-> new RuntimeException("FoodItem not found for ID: " + foodId));
         Log log = new Log();
         log.setUser(user);
         log.setFoodItem(foodItem);
@@ -32,11 +33,11 @@ public class FoodLogService {
         return logRepo.save(log);
     }
     public Log updateLogStatusToEaten(Long logId) {
-        Log log = logRepo.findById(logId).orElseThrow(()->new RuntimeException("Log not found"));
+        Log log = logRepo.findById(logId).orElseThrow(()->new RuntimeException("Log not found for ID: " + logId));
         log.setStatus("Eaten");
         return logRepo.save(log);
     }
     public List<Log> getLogsForUser(Long userId) {
-        return logRepo.findByUserId(userId);
+        return logRepo.findByUser_UserId(userId);
     }
 }
